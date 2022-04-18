@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统日志</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <style>
+        pre {
+            color: #ccc;
+            background: #2d2d2d;
+            padding: 5px;
+        }
+
+        .string {
+            color: #7ec699;
+        }
+
+        .number {
+            color: #f08d49;
+        }
+
+        .boolean {
+            color: #f08d49;
+        }
+
+        .null {
+            color: magenta;
+        }
+
+        .key {
+            color: #f8c555;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-body" style="padding: 30px;position: static">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input name="search_AND_EQ_username" class="layui-input" type="text" placeholder="操作人"/>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input name="search_AND_LIKE_module" class="layui-input" type="text" placeholder="模块"/>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input name="search_AND_LIKE_method" class="layui-input" type="text" placeholder="方法"/>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <select name="search_AND_EQ_resultStatus">
+                            <option value=""></option>
+                            <option value="SUCCESS">SUCCESS</option>
+                            <option value="ERROR">ERROR</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <button  lay-submit lay-filter="formDemo" class="layui-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- 数据表格 -->
+        <table class="layui-table" id="table" lay-filter="table"></table>
+    </div>
+
+    <!-- 表格操作列 -->
+    <script type="text/html" id="barTpl">
+        {{#  if(d.params){ }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="params">参数</a>
+        {{#  } }}
+        {{#  if(d.content){ }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="content">变化</a>
+        {{#  } }}
+        {{#  if(d.afterData){ }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="afterData">修改前</a>
+        {{#  } }}
+        {{#  if(d.beforeData){ }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="beforeData">修改后</a>
+        {{#  } }}
+    </script>
+
+    <script type="text/javascript" src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script type="text/javascript" src="js/formatJson.js"></script>
+    <script type="text/javascript">
+        layui.use(['table', 'util', 'laydate', 'jquery', 'form'], function () {
+        const table = layui.table,
+            util = layui.util,
+            form = layui.form,
+            $ = layui.jquery;
+
+        table.render({
+            elem: '#table',
+            url: 'sysOperationLog/page',
+            page: true,
+            limit: 10,
+            defaultToolbar: [],
+            request: {
+                pageName: 'page',
+                limitName: 'size'
+            },
+            where: {
+              "layui": "layui"
+            },
+            parseData: function(res){
+                return {
+                    "code": res.code,
+                    "msg": res.message,
+                    "count": res.data.totalElements,
+                    "data": res.data.content
+                }
+            },
+            headers: {
+              token: localStorage.getItem("PP-token")
+            },
+            response: {
+                statusCode: 200,
+            },
+            cols: [[
+                {field: 'id', title: 'id'},
+                {field: 'username', title: '操作人'},
+                {field: 'module', title: '模块'},
+                {field: 'method', title: '方法'},
+                {field: 'serverIp', title: '服务器'},
+                {field: 'startTime', templet: function (d) {
+                    return d.startTime ? util.toDateString(d.startTime) : '';
+                }, title: '请求时间' },
+                {field: 'resultStatus', title: '处理结果'},
+                {align: 'center', toolbar: '#barTpl', title: '操作', width:240}
+            ]]
+        });
+
+        table.on('tool(table)', function (obj) {
+            let jsonData;
+            if (obj.event === 'params') {
+                jsonData = obj.data.params
+            }else if(obj.event === 'content'){
+                jsonData = obj.data.content
+            }else if(obj.event === 'afterData'){
+                jsonData = obj.data.afterData
+            }else if(obj.event === 'beforeData'){
+                jsonData = obj.data.beforeData
+            }
+            if(jsonData){
+                layer.open({
+                    type: 1,
+                    closeBtn: 0,
+                    offset: '100px',
+                    title: false,
+                    area: '800px',
+                    maxHeight: '400',
+                    shadeClose: true,
+                    content: '<pre>' + formatJson(jsonData) + '</pre>'
+                });
+            }else{
+                layer.msg("暂无数据", {icon: 2});
+            }
+        });
+
+        form.on('submit(formDemo)', function(data){
+            data.field.layui = "layui"
+            table.reload('table', {
+                where: data.field, page: {curr: 1}
+            });
+            return false;
+        });
+    })
+</script>
+</body>
+</html>
