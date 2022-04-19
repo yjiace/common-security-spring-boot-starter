@@ -8,9 +8,9 @@
         <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cn.smallyoung</groupId>
+    <groupId>io.github.yjiace</groupId>
     <artifactId>common-security-spring-boot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>common-security-spring-boot-starter</name>
     <description>common-security-spring-boot-starter</description>
 
@@ -22,6 +22,28 @@
         <log4j-api.version>2.15.0</log4j-api.version>
         <hibernate-types.version>2.14.0</hibernate-types.version>
     </properties>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <tag>master</tag>
+        <url>git@github.com:yjiace/common-security-spring-boot-starter.git</url>
+        <connection>scm:git:git@github.com:yjiace/common-security-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:git@github.com:yjiace/common-security-spring-boot-starter.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>smallyoung</name>
+            <email>504015995@qq.com</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -192,6 +214,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
             </plugin>
         </plugins>
     </build>
