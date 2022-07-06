@@ -1,6 +1,5 @@
 package cn.smallyoung.commonsecurityspringbootstarter.filter;
 
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.smallyoung.commonsecurityspringbootstarter.util.AntPathMatcherUtil;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
@@ -47,7 +46,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     public final void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String token = request.getHeader(jwtConfig.getTokenHead());
-        log.info("post-practice获取token：{}", token);
+        log.info("{}获取token：{}", applicationName, token);
         if (StrUtil.isBlank(token) || "null".equals(token)) {
             chain.doFilter(request, response);
             return;
@@ -60,8 +59,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         //判断token是否过期，如果未过期则重新签发token
         Date expiredDate = claims.getExpiration();
         if (expiredDate == null || expiredDate.after(new Date())) {
-            String username = claims.get("username", String.class);
-            String authorities = claims.get("authorities", String.class);
+            String username = claims.get(jwtConfig.getUserName(), String.class);
+            String authorities = claims.get(jwtConfig.getAuthorityName(), String.class);
             List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
             if (StrUtil.isNotBlank(authorities)) {
                 grantedAuthorityList = Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
@@ -72,9 +71,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     || grantedAuthorityList.stream().map(GrantedAuthority::getAuthority).anyMatch(pattern -> AntPathMatcherUtil.matches(pattern, uri))) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, token, grantedAuthorityList);
                 //是否记住密码
-                boolean remember = Boolean.parseBoolean(String.valueOf(claims.get("remember")));
-                String newToken = JwtTokenUtil.generateToken(username, jwtConfig.getPrivateKey(), applicationName, applicationName, jwtConfig.getExpiration(),
-                        Dict.create().set("authorities", authorities), remember);
+                boolean remember = Boolean.parseBoolean(String.valueOf(claims.get(jwtConfig.getRememberName())));
+                String newToken = JwtTokenUtil.generateToken(username, authorities, remember);
                 if (newToken != null) {
                     if (jwtConfig.getSso()) {
                         if (remember) {

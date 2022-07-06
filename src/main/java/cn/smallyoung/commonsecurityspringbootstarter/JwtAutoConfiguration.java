@@ -4,7 +4,6 @@ import cn.smallyoung.commonsecurityspringbootstarter.component.RestAccessDeniedH
 import cn.smallyoung.commonsecurityspringbootstarter.component.RestAuthenticationEntryPoint;
 import cn.smallyoung.commonsecurityspringbootstarter.component.RestLogoutHandler;
 import cn.smallyoung.commonsecurityspringbootstarter.config.SpringSecurityAuditorAware;
-import cn.smallyoung.commonsecurityspringbootstarter.config.WebSecurityConfig;
 import cn.smallyoung.commonsecurityspringbootstarter.filter.JwtAuthenticationTokenFilter;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -32,17 +30,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 })
 public class JwtAutoConfiguration {
 
-    @Bean
-    @ConditionalOnClass(UserDetailsService.class)
-    public WebSecurityConfig webSecurityConfig(){
-        return new WebSecurityConfig();
-    }
 
     /**
      * 未登录或者token失效
      */
     @Bean
-    @ConditionalOnClass({JwtConfig.class, WebSecurityConfig.class})
+    @ConditionalOnClass({JwtConfig.class})
     public RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
         return new RestAuthenticationEntryPoint();
     }
@@ -51,7 +44,7 @@ public class JwtAutoConfiguration {
      * 访问接口没有权限
      */
     @Bean
-    @ConditionalOnClass({JwtConfig.class, WebSecurityConfig.class})
+    @ConditionalOnClass({JwtConfig.class})
     public RestAccessDeniedHandler restAccessDeniedHandler() {
         return new RestAccessDeniedHandler();
     }
@@ -60,7 +53,7 @@ public class JwtAutoConfiguration {
      * 退出成功处理器
      */
     @Bean
-    @ConditionalOnClass({JwtConfig.class, WebSecurityConfig.class})
+    @ConditionalOnClass({JwtConfig.class})
     public RestLogoutHandler restLogoutHandler() {
         return new RestLogoutHandler();
     }
@@ -72,7 +65,7 @@ public class JwtAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass({JwtConfig.class, WebSecurityConfig.class})
+    @ConditionalOnClass({JwtConfig.class})
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
         return new JwtAuthenticationTokenFilter();
     }

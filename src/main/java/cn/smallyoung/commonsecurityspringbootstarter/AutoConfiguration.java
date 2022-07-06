@@ -1,7 +1,6 @@
 package cn.smallyoung.commonsecurityspringbootstarter;
 
 import cn.smallyoung.commonsecurityspringbootstarter.config.LocalDateTimeSerializerConfig;
-import cn.smallyoung.commonsecurityspringbootstarter.controller.DefinedErrorController;
 import cn.smallyoung.commonsecurityspringbootstarter.controller.LoggerController;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.context.annotation.Import;
         BaseRepositoryAutoConfiguration.class,
         JwtAutoConfiguration.class,
         LoggerController.class,
-        DefinedErrorController.class,
         LocalDateTimeSerializerConfig.class
 })
 public class AutoConfiguration {

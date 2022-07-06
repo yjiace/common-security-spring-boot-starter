@@ -7,7 +7,11 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -19,31 +23,60 @@ import java.util.Map;
 
 /**
  * JwtToken 工具类
+ *
  * @author SmallYoung
  * @date 2021/10/21
  */
 
 @Slf4j
+@Component
 public class JwtTokenUtil {
 
+    @Resource
+    private JwtConfig jwtConfig;
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    private static JwtConfig config;
+
+    private static String application;
+
+    @PostConstruct
+    public void init() {
+        config = jwtConfig;
+        application = applicationName;
+    }
+
     /**
-     * 根据负责生成JWT的token
-     * @param username  用户名称
-     * @param privateKey 私钥
-     * @param issuer 发行者
-     * @param subject 签发平台
-     * @param offset 过期时长
-     * @param claims 其他信息
-     * @param remember 记住密码
+     * 负责生成JWT的token
+     * 默认将发行者、签发平台设置为项目名
+     *
+     * @param username    用户名
+     * @param authorities 权限列表
+     * @param remember    是否记住密码
      * @return token
      */
-    public static String generateToken(String username, String privateKey, String subject, String issuer,
+    public static String generateToken(String username, String authorities, boolean remember) {
+        Map<String, Object> claims = new HashMap<>(5);
+        claims.put(config.getUserName(), username);
+        claims.put(config.getRememberName(), remember);
+        claims.put(config.getAuthorityName(), authorities);
+        return generateToken(config.getPrivateKey(), application, application, config.getExpiration(), claims, remember);
+    }
+
+    /**
+     * 负责生成JWT的token
+     *
+     * @param privateKey 私钥
+     * @param issuer     发行者
+     * @param subject    签发平台
+     * @param offset     过期时长
+     * @param claims     其他信息
+     * @param remember   记住密码
+     * @return token
+     */
+    public static String generateToken(String privateKey, String subject, String issuer,
                                        int offset, Map<String, Object> claims, boolean remember) {
-        if(claims == null){
-            claims = new HashMap<>();
-        }
-        claims.put("username", username);
-        claims.put("remember", remember);
         try {
             byte[] keyBytes = Base64.getMimeDecoder().decode(privateKey);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
@@ -59,13 +92,13 @@ public class JwtTokenUtil {
                 jwtBuilder.setExpiration(DateUtil.offsetMinute(DateTime.now(), offset));
             }
             return jwtBuilder.compact();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("生成token出错:", e);
             return null;
         }
     }
 
-    public static Claims parseToken(String publicKey, String token){
+    public static Claims parseToken(String publicKey, String token) {
         //密钥错误会抛出SignatureException，说明该token是伪造的
         //如果过期时间exp字段已经早于当前时间，会抛出ExpiredJwtException，说明token已经失效
         try {
@@ -74,7 +107,7 @@ public class JwtTokenUtil {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey publicKey0 = keyFactory.generatePublic(keySpec);
             return Jwts.parser().setSigningKey(publicKey0).parseClaimsJws(token).getBody();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("token错误:{}", e.getMessage());
             return null;
         }
