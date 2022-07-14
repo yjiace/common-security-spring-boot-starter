@@ -20,7 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @ConditionalOnClass(BaseRepository.class)
 @EntityScan("cn.smallyoung.commonsecurityspringbootstarter.entity")
-@EnableJpaRepositories(basePackages = {"cn.smallyoung.commonsecurityspringbootstarter.dao"},
+@EnableJpaRepositories(basePackages = {"cn.smallyoung.commonsecurityspringbootstarter.dao", "cn.smallyoung.commonsecurityspringbootstarter.base"},
         repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 @Import({
         SysOperationLogAspect.class,
