@@ -45,8 +45,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     public final void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+
         String token = request.getHeader(jwtConfig.getTokenHead());
         log.info("{}获取token：{}", applicationName, token);
+        if(!jwtConfig.getEnable()){
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin", token, new ArrayList<>()));
+            chain.doFilter(request, response);
+            return;
+        }
         if (StrUtil.isBlank(token) || "null".equals(token)) {
             chain.doFilter(request, response);
             return;

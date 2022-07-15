@@ -1,10 +1,11 @@
 package cn.smallyoung.commonsecurityspringbootstarter.base;
 
+import cn.smallyoung.commonsecurityspringbootstarter.base.specification.SimpleSpecificationBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 public abstract class BaseService<T, ID extends Serializable> {
 
-    @Resource
+    @Autowired
     public BaseRepository<T, ID> baseRepository;
 
     public Optional<T> findById(ID id) {
@@ -33,15 +34,15 @@ public abstract class BaseService<T, ID extends Serializable> {
     }
 
     public List<T> findAll(Map<String, Object> map) {
-        return baseRepository.findAll(map);
+        return baseRepository.findAll(new SimpleSpecificationBuilder<T>(map).getSpecification());
     }
 
-    public List<T> findAllById(Iterable<ID> var1){
+    public List<T> findAllById(Iterable<ID> var1) {
         return baseRepository.findAllById(var1);
     }
 
     public List<T> findAll(Map<String, Object> map, Sort sort) {
-        return baseRepository.findAll(map, sort);
+        return baseRepository.findAll(new SimpleSpecificationBuilder<T>(map).getSpecification(), sort);
     }
 
     public List<T> findAll(Sort sort) {
@@ -53,7 +54,7 @@ public abstract class BaseService<T, ID extends Serializable> {
     }
 
     public Page<T> findAll(Map<String, Object> map, Pageable pageable) {
-        return baseRepository.findAll(map, pageable);
+        return baseRepository.findAll(new SimpleSpecificationBuilder<T>(map).getSpecification(), pageable);
     }
 
     public List<T> findAll(Iterable<ID> iterable) {
@@ -68,11 +69,11 @@ public abstract class BaseService<T, ID extends Serializable> {
         return baseRepository.saveAll(s);
     }
 
-    public boolean existsById(ID id){
+    public boolean existsById(ID id) {
         return baseRepository.existsById(id);
     }
 
-    public long count(Map<String, Object> map){
-        return baseRepository.count(map);
+    public long count(Map<String, Object> map) {
+        return baseRepository.count(new SimpleSpecificationBuilder<T>(map).getSpecification());
     }
 }

@@ -7,5 +7,5 @@ import cn.smallyoung.commonsecurityspringbootstarter.entity.SysOperationLog;
 /**
  * @author smallyoung
  */
-public interface SysOperationLogDao extends BaseRepository<SysOperationLog, Long> {
+public interface SysOperationLogRepository extends BaseRepository<SysOperationLog, Long> {
 }

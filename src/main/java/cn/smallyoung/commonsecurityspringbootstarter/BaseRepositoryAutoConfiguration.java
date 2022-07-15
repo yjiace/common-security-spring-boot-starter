@@ -2,7 +2,6 @@ package cn.smallyoung.commonsecurityspringbootstarter;
 
 import cn.smallyoung.commonsecurityspringbootstarter.aspect.SysOperationLogAspect;
 import cn.smallyoung.commonsecurityspringbootstarter.base.BaseRepository;
-import cn.smallyoung.commonsecurityspringbootstarter.base.BaseRepositoryFactoryBean;
 import cn.smallyoung.commonsecurityspringbootstarter.controller.SysOperationLogController;
 import cn.smallyoung.commonsecurityspringbootstarter.service.SysOperationLogService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -19,9 +18,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @ConditionalOnClass(BaseRepository.class)
-@EntityScan("cn.smallyoung.commonsecurityspringbootstarter.entity")
-@EnableJpaRepositories(basePackages = {"cn.smallyoung.commonsecurityspringbootstarter.dao", "cn.smallyoung.commonsecurityspringbootstarter.base"},
-        repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
+@EntityScan("**")
+@EnableJpaRepositories(basePackages = {"**"})
 @Import({
         SysOperationLogAspect.class,
         SysOperationLogService.class,

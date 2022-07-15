@@ -17,6 +17,11 @@ import java.util.List;
 public class JwtConfig {
 
     /**
+     * 是否开启鉴权，当为false时，表示通过全部请求
+     */
+    private Boolean enable = true;
+
+    /**
      * 是否单点登录
      */
     private Boolean sso = false;
