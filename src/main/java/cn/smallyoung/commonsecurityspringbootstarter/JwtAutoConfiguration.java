@@ -6,6 +6,7 @@ import cn.smallyoung.commonsecurityspringbootstarter.component.RestLogoutHandler
 import cn.smallyoung.commonsecurityspringbootstarter.config.SpringSecurityAuditorAware;
 import cn.smallyoung.commonsecurityspringbootstarter.filter.JwtAuthenticationTokenFilter;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
+import cn.smallyoung.commonsecurityspringbootstarter.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * jwt 相关的自动装配
+ *
  * @author smallyoung
  * @date 2022/4/8
  */
@@ -66,8 +68,13 @@ public class JwtAutoConfiguration {
 
     @Bean
     @ConditionalOnClass({JwtConfig.class})
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
         return new JwtAuthenticationTokenFilter();
     }
 
+    @Bean
+    @ConditionalOnClass({JwtConfig.class})
+    public JwtTokenUtil jwtTokenUtil() {
+        return new JwtTokenUtil();
+    }
 }
