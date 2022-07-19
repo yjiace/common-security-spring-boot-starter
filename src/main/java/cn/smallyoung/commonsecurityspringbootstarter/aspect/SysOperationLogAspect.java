@@ -15,6 +15,7 @@ import cn.smallyoung.commonsecurityspringbootstarter.enums.SysOperationLogWayEnu
 import cn.smallyoung.commonsecurityspringbootstarter.interfaces.DataName;
 import cn.smallyoung.commonsecurityspringbootstarter.interfaces.SystemOperationLog;
 import cn.smallyoung.commonsecurityspringbootstarter.service.SysOperationLogService;
+import cn.smallyoung.commonsecurityspringbootstarter.util.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -62,6 +63,7 @@ public class SysOperationLogAspect {
         sysOperationLog.setMethod(systemOperationLog.methods());
         sysOperationLog.setModule(systemOperationLog.module());
         sysOperationLog.setServerIp("".equals(serverIpAddress) ? SystemUtil.getHostInfo().getAddress() : serverIpAddress);
+        sysOperationLog.setRequestIp(RequestUtils.getIp());
         JSONObject params = getParam(pjp);
         sysOperationLog.setParams(params);
         Object value = BeanUtil.getProperty(params, systemOperationLog.parameterKey());
@@ -208,7 +210,7 @@ public class SysOperationLogAspect {
                 }
                 content = new JSONObject();
                 value = ReflectUtil.getFieldValue(object, field);
-                if(value == null){
+                if (value == null) {
                     continue;
                 }
                 if (ClassUtil.isSimpleValueType(value.getClass())) {
@@ -227,7 +229,7 @@ public class SysOperationLogAspect {
                     content.putOpt("name", dataName.name());
                 }
                 value = ReflectUtil.getFieldValue(object, field);
-                if(value != null){
+                if (value != null) {
                     if (ClassUtil.isSimpleValueType(value.getClass()) || value instanceof Map) {
                         content.putOpt("value", value);
                     } else if (value instanceof Collection) {
@@ -243,7 +245,7 @@ public class SysOperationLogAspect {
                         dataNameValue = getDataNameValue(dataNameValue);
                         content.putOpt("value", getContent(value, set, dataNameValue));
                     }
-                }else{
+                } else {
                     content.putOpt("value", null);
                 }
                 result.putOpt(field.getName(), content);

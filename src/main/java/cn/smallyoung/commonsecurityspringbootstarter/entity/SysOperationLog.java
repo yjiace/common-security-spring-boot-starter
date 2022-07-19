@@ -119,6 +119,12 @@ public class SysOperationLog implements Serializable {
      */
     @Column(name = "server_ip" )
     private String serverIp;
+
+    /**
+     * 请求的ip地址
+     */
+    @Column(name = "request_ip" )
+    private String requestIp;
 }
 
 
