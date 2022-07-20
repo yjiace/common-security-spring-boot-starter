@@ -112,14 +112,18 @@ public class SysOperationLogAspect {
         Object obj;
         for (int i = 0; i < args.length; i++) {
             obj = args[i];
-            if (ClassUtil.isSimpleValueType(obj.getClass())) {
-                result.set(fieldsName[i], args[i]);
-            } else if (obj instanceof JSONArray) {
-                result.set(fieldsName[i], (new JSONObject()).set("param", obj));
-            } else if (obj instanceof JSONObject) {
-                result.set(fieldsName[i], obj);
+            if (obj != null) {
+                if (ClassUtil.isSimpleValueType(obj.getClass())) {
+                    result.set(fieldsName[i], args[i]);
+                } else if (obj instanceof JSONArray) {
+                    result.set(fieldsName[i], (new JSONObject()).set("param", obj));
+                } else if (obj instanceof JSONObject) {
+                    result.set(fieldsName[i], obj);
+                } else {
+                    result.set(fieldsName[i], new JSONObject(obj));
+                }
             } else {
-                result.set(fieldsName[i], new JSONObject(obj));
+                result.set(fieldsName[i], null);
             }
         }
         return result;
