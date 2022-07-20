@@ -47,10 +47,9 @@ public class SysOperationLogAspect {
     private String serverIpAddress;
 
     @Resource
-    private SysOperationLogService sysOperationLogService;
-    @Resource
     private ApplicationContext applicationContext;
-
+    @Resource
+    private SysOperationLogService sysOperationLogService;
 
     @Around("@annotation(systemOperationLog)")
     public Object around(ProceedingJoinPoint pjp, SystemOperationLog systemOperationLog) throws Throwable {
@@ -129,6 +128,15 @@ public class SysOperationLogAspect {
         return result;
     }
 
+    /**
+     * 根据反射查询实体bean
+     *
+     * @param serviceClass  查询bean的服务类
+     * @param queryMethod   查询单个详情的bean的方法
+     * @param value         参数值
+     * @param parameterType 查询详情的参数类型
+     * @return 查询到的对象
+     */
     private Object getOperateBeforeDataByParamType(Class<?> serviceClass, String queryMethod, Object value, Class<?> parameterType) {
         if (value == null || StrUtil.hasBlank(queryMethod) || serviceClass == null) {
             return null;
@@ -160,17 +168,15 @@ public class SysOperationLogAspect {
         //集合
         JSONObject result = new JSONObject();
         if (object instanceof Collection) {
-            List<Object> list = new ArrayList<>((Collection<?>) object);
             JSONArray jsonArray = new JSONArray();
             JSONObject content;
-            for (Object obj : list) {
-                if (set.contains(obj.hashCode())) {
-                    continue;
-                }
-                set.add(obj.hashCode());
-                content = getContent(obj, set, dataNameValue);
-                if (content != null && content.keySet().size() > 0) {
-                    jsonArray.add(content);
+            for (Object obj : (Collection<?>) object) {
+                if (!set.contains(obj.hashCode())) {
+                    set.add(obj.hashCode());
+                    content = getContent(obj, set, dataNameValue);
+                    if (content != null && content.keySet().size() > 0) {
+                        jsonArray.add(content);
+                    }
                 }
             }
             result.putOpt("data", jsonArray);
