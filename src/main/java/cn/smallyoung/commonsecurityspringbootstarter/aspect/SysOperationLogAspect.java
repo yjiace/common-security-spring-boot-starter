@@ -109,22 +109,8 @@ public class SysOperationLogAspect {
         // 拦截的方法参数
         Object[] args = pjp.getArgs();
         JSONObject result = new JSONObject();
-        Object obj;
         for (int i = 0; i < args.length; i++) {
-            obj = args[i];
-            if (obj != null) {
-                if (ClassUtil.isSimpleValueType(obj.getClass())) {
-                    result.set(fieldsName[i], args[i]);
-                } else if (obj instanceof JSONArray) {
-                    result.set(fieldsName[i], (new JSONObject()).set("param", obj));
-                } else if (obj instanceof JSONObject) {
-                    result.set(fieldsName[i], obj);
-                } else {
-                    result.set(fieldsName[i], new JSONObject(obj));
-                }
-            } else {
-                result.set(fieldsName[i], null);
-            }
+            result.set(fieldsName[i], args[i]);
         }
         return result;
     }
