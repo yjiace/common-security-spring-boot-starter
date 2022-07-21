@@ -22,6 +22,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -167,6 +168,9 @@ public class SysOperationLogAspect {
         }
         //集合
         JSONObject result = new JSONObject();
+        if (object instanceof PersistentBag) {
+            return result;
+        }
         if (object instanceof Collection) {
             JSONArray jsonArray = new JSONArray();
             JSONObject content;
