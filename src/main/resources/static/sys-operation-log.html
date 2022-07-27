@@ -78,13 +78,10 @@
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="params">参数</a>
         {{#  } }}
         {{#  if(d.content){ }}
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="content">变化</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="content">内容</a>
         {{#  } }}
-        {{#  if(d.afterData){ }}
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="afterData">修改前</a>
-        {{#  } }}
-        {{#  if(d.beforeData){ }}
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="beforeData">修改后</a>
+        {{#  if(d.afterData || d.beforeData){ }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="variety">变化</a>
         {{#  } }}
     </script>
 
@@ -133,23 +130,14 @@
                 {field: 'startTime', templet: function (d) {
                     return d.startTime ? util.toDateString(d.startTime) : '';
                 }, title: '请求时间' },
-                {field: 'resultStatus', title: '处理结果'},
+                {field: 'resultStatus', width: 120, title: '处理状态'},
+                {field: 'resultMsg', title: '操作结果'},
                 {align: 'center', toolbar: '#barTpl', title: '操作', width:240}
             ]]
         });
 
         table.on('tool(table)', function (obj) {
-            let jsonData;
             if (obj.event === 'params') {
-                jsonData = obj.data.params
-            }else if(obj.event === 'content'){
-                jsonData = obj.data.content
-            }else if(obj.event === 'afterData'){
-                jsonData = obj.data.afterData
-            }else if(obj.event === 'beforeData'){
-                jsonData = obj.data.beforeData
-            }
-            if(jsonData){
                 layer.open({
                     type: 1,
                     closeBtn: 0,
@@ -158,10 +146,33 @@
                     area: '800px',
                     maxHeight: '400',
                     shadeClose: true,
-                    content: '<pre>' + formatJson(jsonData) + '</pre>'
+                    content: '<pre>' + formatJson(obj.data.params) + '</pre>'
                 });
-            }else{
-                layer.msg("暂无数据", {icon: 2});
+            }else if(obj.event === 'content'){
+                layer.open({
+                    type: 1,
+                    closeBtn: 0,
+                    offset: '100px',
+                    title: false,
+                    area: '800px',
+                    maxHeight: '400',
+                    shadeClose: true,
+                    content: '<pre>' + formatJson(obj.data.content) + '</pre>'
+                });
+            }else if(obj.event === 'variety'){
+                layer.open({
+                    type: 1,
+                    closeBtn: 0,
+                    offset: '100px',
+                    title: false,
+                    area: '800px',
+                    maxHeight: '400',
+                    shadeClose: true,
+                    content: '<div class="layui-row" style="background-color: #2d2d2d;">' +
+                        '<div class="layui-col-md6"><pre>' + formatJson(obj.data.beforeData) + '</pre></div>' +
+                        '<div class="layui-col-md6"><pre>' + formatJson(obj.data.afterData) + '</pre></div>' +
+                        '</div>'
+                });
             }
         });
 

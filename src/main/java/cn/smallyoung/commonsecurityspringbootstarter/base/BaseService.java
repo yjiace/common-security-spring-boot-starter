@@ -73,6 +73,10 @@ public abstract class BaseService<T, ID extends Serializable> {
         return baseRepository.existsById(id);
     }
 
+    public boolean exists(Map<String, Object> map){
+        return baseRepository.exists(new SimpleSpecificationBuilder<T>(map).getSpecification());
+    }
+
     public long count(Map<String, Object> map) {
         return baseRepository.count(new SimpleSpecificationBuilder<T>(map).getSpecification());
     }
