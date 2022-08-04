@@ -1,6 +1,6 @@
 package cn.smallyoung.commonsecurityspringbootstarter.util;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author SmallYoung
  * @date 2021/10/25
  */
-@Slf4j
+@Log4j2
 public class UserUtil {
 
     public static String getCurrentAuditor(){

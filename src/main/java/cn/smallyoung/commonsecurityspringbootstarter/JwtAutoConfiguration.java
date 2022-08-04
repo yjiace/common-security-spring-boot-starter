@@ -7,7 +7,7 @@ import cn.smallyoung.commonsecurityspringbootstarter.config.SpringSecurityAudito
 import cn.smallyoung.commonsecurityspringbootstarter.filter.JwtAuthenticationTokenFilter;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtTokenUtil;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -23,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author smallyoung
  * @date 2022/4/8
  */
-@Slf4j
+@Log4j2
 @Configuration
 @ConditionalOnClass(SecurityAutoConfiguration.class)
 @EnableConfigurationProperties(value = JwtConfig.class)

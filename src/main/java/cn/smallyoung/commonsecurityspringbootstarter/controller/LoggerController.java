@@ -1,7 +1,7 @@
 package cn.smallyoung.commonsecurityspringbootstarter.controller;
 
 import cn.smallyoung.commonsecurityspringbootstarter.interfaces.ResponseSysResult;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author SmallYoung
  * @date 2021/11/19
  */
-@Slf4j
+@Log4j2
 @RestController
 @ResponseSysResult
 @RequestMapping("log4j2")

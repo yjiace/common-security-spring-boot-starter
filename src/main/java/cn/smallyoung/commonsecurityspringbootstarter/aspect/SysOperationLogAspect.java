@@ -16,7 +16,7 @@ import cn.smallyoung.commonsecurityspringbootstarter.interfaces.DataName;
 import cn.smallyoung.commonsecurityspringbootstarter.interfaces.SystemOperationLog;
 import cn.smallyoung.commonsecurityspringbootstarter.service.SysOperationLogService;
 import cn.smallyoung.commonsecurityspringbootstarter.util.RequestUtils;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 /**
  * @author smallyoung
  */
-@Slf4j
+@Log4j2
 @Aspect
 @Component
 public class SysOperationLogAspect {

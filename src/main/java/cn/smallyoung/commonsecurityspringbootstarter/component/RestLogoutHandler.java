@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
 import cn.smallyoung.commonsecurityspringbootstarter.util.UserUtil;
 import cn.smallyoung.commonsecurityspringbootstarter.util.result.SysResultStatus;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  * @author SmallYoung
  * @date 2021/2/3
  */
-@Slf4j
+@Log4j2
 public class RestLogoutHandler implements LogoutSuccessHandler {
 
     @Value("${spring.application.name:''}")

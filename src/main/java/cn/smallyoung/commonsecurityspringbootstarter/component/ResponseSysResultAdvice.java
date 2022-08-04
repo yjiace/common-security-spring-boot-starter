@@ -3,7 +3,7 @@ package cn.smallyoung.commonsecurityspringbootstarter.component;
 import cn.hutool.core.lang.Dict;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import cn.smallyoung.commonsecurityspringbootstarter.interfaces.ResponseSysResult;
 import cn.smallyoung.commonsecurityspringbootstarter.util.result.SysResult;
 import cn.smallyoung.commonsecurityspringbootstarter.util.result.SysResultStatus;
@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 /**
  * @author smallyoung
  */
-@Slf4j
+@Log4j2
 @RestControllerAdvice
 public class ResponseSysResultAdvice implements ResponseBodyAdvice<Object> {
 

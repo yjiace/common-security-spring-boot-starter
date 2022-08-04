@@ -5,7 +5,7 @@ import cn.smallyoung.commonsecurityspringbootstarter.util.AntPathMatcherUtil;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtConfig;
 import cn.smallyoung.commonsecurityspringbootstarter.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author smallyoung
  * @data 2020/10/27
  */
-@Slf4j
+@Log4j2
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Resource
