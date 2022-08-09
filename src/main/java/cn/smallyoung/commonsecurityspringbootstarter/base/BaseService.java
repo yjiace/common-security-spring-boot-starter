@@ -29,6 +29,11 @@ public abstract class BaseService<T, ID extends Serializable> {
         return optional.orElse(null);
     }
 
+    public T findFirst(Map<String, Object> map){
+        List<T> list = baseRepository.findAll(new SimpleSpecificationBuilder<T>(map).getSpecification());
+        return list.size() > 0 ? list.get(0) : null;
+    }
+
     public List<T> findAll() {
         return baseRepository.findAll();
     }
