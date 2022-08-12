@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.DynaBean;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
@@ -66,7 +67,11 @@ public class SysOperationLogAspect {
         sysOperationLog.setRequestIp(RequestUtils.getIp());
         JSONObject params = getParam(pjp);
         sysOperationLog.setParams(params);
-        Object value = BeanUtil.getProperty(params, systemOperationLog.parameterKey());
+        String[] array = systemOperationLog.parameterKey().split(",");
+        Object[] value = new Object[array.length];
+        for (int i = 0; i < array.length; i++) {
+            value[i] = BeanUtil.getProperty(params, array[i]);
+        }
         if (systemOperationLog.way() != SysOperationLogWayEnum.RecordOnly) {
             Object oldObject = getOperateBeforeDataByParamType(systemOperationLog.serviceClass(),
                     systemOperationLog.queryMethod(), value, systemOperationLog.parameterType());
@@ -124,12 +129,16 @@ public class SysOperationLogAspect {
      * @param parameterType 查询详情的参数类型
      * @return 查询到的对象
      */
-    private Object getOperateBeforeDataByParamType(Class<?> serviceClass, String queryMethod, Object value, Class<?> parameterType) {
+    private Object getOperateBeforeDataByParamType(Class<?> serviceClass, String queryMethod, Object[] value, Class<?> parameterType) {
         if (value == null || StrUtil.hasBlank(queryMethod) || serviceClass == null) {
             return null;
         }
-        Object object = applicationContext.getBean(serviceClass);
-        return DynaBean.create(object).invoke(queryMethod, Convert.convert(parameterType, value));
+        Object bean = applicationContext.getBean(serviceClass);
+        if (value.length > 1 && !ObjectUtil.isBasicType(parameterType)){
+            Object pk = ReflectUtil.newInstance(parameterType, value);
+            return DynaBean.create(bean).invoke(queryMethod, Convert.convert(parameterType, pk));
+        }
+        return DynaBean.create(bean).invoke(queryMethod, Convert.convert(parameterType, value));
     }
 
     /**
